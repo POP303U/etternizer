@@ -34,7 +34,7 @@ char *BuildSMHeader(const QuaverHeader *quaverHeader) {
              quaverHeader->background ? quaverHeader->background : "",
              quaverHeader->banner ? quaverHeader->banner : "",
              quaverHeader->offset ? quaverHeader->offset : 0,
-             quaverHeader->preview_time ? quaverHeader->preview_time : 5,
+             quaverHeader->previewTime ? quaverHeader->previewTime : 5,
              quaverHeader->bpms ? quaverHeader->bpms : "");
 
     return header;
