@@ -1,4 +1,5 @@
 #ifndef TOOLS_H
+#define TOOLS_H
 
 // Extracts a Double value from a yaml key
 double ExtractDouble(const char *source, const char *key);

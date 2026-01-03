@@ -1,4 +1,5 @@
 #ifndef INPUT_HANDLER_H
+#define INPUT_HANDLER_H
 
 #ifdef _WIN32
     #define SEPERATOR "\\"
