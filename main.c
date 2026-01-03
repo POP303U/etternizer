@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "lib/etterna/header.h"
-#include "lib/quaver/header.h"
+#include "lib/quaver/parser.h"
 #include "lib/inputhandler.h"
 
 int main(int argc, char **argv) {
