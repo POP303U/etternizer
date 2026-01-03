@@ -9,7 +9,7 @@ typedef struct {
     char *background;
     char *banner;
 
-    double preview_time; // seconds
+    double previewTime; // seconds
     double offset;       // etterna uses -offset
     char *bpms;          // list of bpms in sm format
 } QuaverHeader;

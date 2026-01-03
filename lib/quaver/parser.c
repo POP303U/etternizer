@@ -23,7 +23,7 @@ QuaverHeader *ParseQuaverHeader(const char *file) {
 
     char *preview = ExtractValue(data, "SongPreviewTime");
     if (preview) {
-        header->preview_time = atof(preview) / 1000.0;
+        header->previewTime = atof(preview) / 1000.0;
         free(preview);
     }
 
@@ -48,36 +48,36 @@ char *ParseQuaverBPMS(const char *data) {
 
     pos += strlen("TimingPoints:");
 
-    double base_time = -1.0;
+    double baseTime = -1.0;
 
     char *bpms = malloc(2048);
     bpms[0] = '\0';
 
     while (1) {
         // temporary vars for counting string length
-        char *_start_time = strstr(pos, "StartTime:");
+        char *_startTime = strstr(pos, "StartTime:");
         char *_bpm = strstr(pos, "Bpm:");
 
-        if (!_start_time || !_bpm) {
+        if (!_startTime || !_bpm) {
             break;
         }
 
         // starttime in ms
-        double start_time = atof(_start_time + strlen("Starttime:")) / 1000.0;
+        double startTime = atof(_startTime + strlen("Starttime:")) / 1000.0;
         double bpm = atof(_bpm + strlen("Bpm:"));
 
         // boundschecking
-        if (base_time < 0.0) {
-            base_time = start_time;
+        if (baseTime < 0.0) {
+            baseTime = startTime;
         }
 
         // stepmania does timing in a negative offset way
-        double sm_time = start_time - base_time;
+        double smTime = startTime - baseTime;
 
         char buffer[64];
 
         // dont add another comma if the current bpm doesn't exist
-        snprintf(buffer, sizeof(buffer), "%s%.3f=%.3f", bpms[0] ? "," : "", sm_time, bpm);
+        snprintf(buffer, sizeof(buffer), "%s%.3f=%.3f", bpms[0] ? "," : "", smTime, bpm);
 
         strcat(bpms, buffer);
 
