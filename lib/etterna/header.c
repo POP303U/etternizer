@@ -18,7 +18,7 @@ char *BuildSMHeader(const QuaverHeader *quaverHeader) {
              "#OFFSET:%.7f;\n"
              "#SAMPLESTART:%.3f;\n"
              "#SAMPLELENGTH:23.640;\n"
-             "#BPMS:0=%.3f;\n"
+             "#BPMS:%s\n"
              "#STOPS:;\n"
              "//---------------dance-single - ----------------\n"
              "#NOTES:\n"
@@ -35,7 +35,7 @@ char *BuildSMHeader(const QuaverHeader *quaverHeader) {
              quaverHeader->banner ? quaverHeader->banner : "",
              quaverHeader->offset ? quaverHeader->offset : 0,
              quaverHeader->preview_time ? quaverHeader->preview_time : 5,
-             quaverHeader->bpm ? quaverHeader->bpm : 0);
+             quaverHeader->bpms ? quaverHeader->bpms : "");
 
     return header;
 }
