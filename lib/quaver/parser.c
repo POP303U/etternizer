@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-QuaverHeader *ParseQuaverHeader(const char *file) {
-    char *data = LoadFile(file);
+QuaverHeader *ParseQuaverHeader(const char *filepath) {
+    char *data = LoadFile(filepath);
     if (!data) {
         return NULL;
     }

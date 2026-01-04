@@ -15,7 +15,7 @@ typedef struct {
 } QuaverHeader;
 
 // Parses simple key variables into the header struct
-QuaverHeader *ParseQuaverHeader(const char *file);
+QuaverHeader *ParseQuaverHeader(const char *filepath);
 
 // Parses the complex bpm yaml format into a string
 char *ParseQuaverBPMS(const char *data);
