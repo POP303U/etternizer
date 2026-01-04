@@ -1,6 +1,8 @@
 #ifndef NOTES_H
 #define NOTES_H
 
+#define ROWS_PER_MEASURE 192 // max bpm
+
 typedef struct {
     char rows[192][5]; // 192 is the highest bpm measurement, 5 for null terminator
 } Measure;

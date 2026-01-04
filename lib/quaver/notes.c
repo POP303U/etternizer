@@ -66,3 +66,86 @@ double TimeToBeat(double timeMs, TimingPoint *timingPoints, size_t tpCount) {
     double deltaBeats = deltaSec * (timingPoint->bpm / 60.0);
     return timingPoint->startBeat + deltaBeats;
 }
+
+Measure *BuildMeasures(QuaverNote *notes, size_t noteCount,
+                       TimingPoint *timingPoints, size_t tpCount,
+                       size_t *outMeasureCount) {
+    size_t maxMeasure = 0;
+
+    // find the highest measure to apply
+    for (size_t i = 0; i < noteCount; i++) {
+        double beat = timeToBeat(notes[i].startMs, timingPoints, tpCount);
+        size_t measure = (size_t) floor(beat / 4.0);
+
+        if (measure > maxMeasure) {
+            maxMeasure = measure;
+        }
+
+        if (notes[i].endMs > 0) {
+            double endBeat = TimeToBeat(notes[i].endMs, timingPoints, tpCount);
+            size_t endMeasure = (size_t) floor(endBeat / 4.0);
+
+            if (endMeasure > maxMeasure) {
+                maxMeasure = endMeasure;
+            }
+        }
+    }
+
+    // fill up all measures with 0s
+    Measure *measures = calloc(maxMeasure + 1, sizeof(Measure));
+    for (size_t m = 0; m <= maxMeasure; m++) {
+        for (int r = 0; r < ROWS_PER_MEASURE; r++) {
+            // unsafe but this is not a critical application
+            strcpy(measures[m].rows[r], "0000");
+        }
+    }
+
+    for (size_t i = 0; i < noteCount; i++) {
+        double beat = TimeToBeat(notes[i].startMs, timingPoints, tpCount);
+        size_t m = (size_t) floor(beat / 4.0);
+        double beatInMeasure = beat - (m* 4.0);
+
+        int row = (int) round((beatInMeasure / 4.0) * ROWS_PER_MEASURE);
+        // account for array indexing
+        if (row >= ROWS_PER_MEASURE) {
+            row = ROWS_PER_MEASURE - 1;
+        }
+
+        // probably bad to do it this way
+        measures[m].rows[row][notes[i].lane] = '1';
+
+        if (notes[i].endMs > 0) {
+            double endBeat = TimeToBeat(notes[i].endMs, timingPoints, tpCount);
+            size_t endMeasure = (size_t) floor(endMeasure / 4.0);
+            double endBeatInMeasure = endBeat - (endMeasure * 4.0);
+            
+            int endRow = (int) round((endBeatInMeasure / 4.0) * ROWS_PER_MEASURE);
+            // account for array indexing
+            if (endRow >= ROWS_PER_MEASURE) {
+                endRow = ROWS_PER_MEASURE - 1;
+            }
+
+            // LNs
+            measures[endMeasure].rows[endRow][notes[i].lane] = '3';
+        }
+    }
+
+    *outMeasureCount = maxMeasure + 1;
+    return measures;
+}
+
+char *BuildSMNotes(Measure *measures, size_t measureCount) {
+    char *out = malloc(2^16); // 65k~ Bytes
+    out[0] = '\0';
+
+    // actually build the long string of notes
+    for (size_t m = 0; m < measureCount; m++) {
+        for (int r = 0; r < ROWS_PER_MEASURE; r++) {
+            strcat(out, measures[m].rows[r]);
+            strcat(out, "\n");
+        }
+        strcat(out, m == measureCount - 1 ? ";\n" : ",\n");
+    }
+
+    return out;
+}
