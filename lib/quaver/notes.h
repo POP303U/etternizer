@@ -1,10 +1,12 @@
 #ifndef NOTES_H
 #define NOTES_H
 
+#include <stddef.h>
+
 #define ROWS_PER_MEASURE 192 // max bpm
 
 typedef struct {
-    char rows[192][5]; // 192 is the highest bpm measurement, 5 for null terminator
+    char rows[ROWS_PER_MEASURE][5]; // 192 is the highest bpm measurement, 5 for null terminator
 } Measure;
 
 typedef struct {
@@ -20,7 +22,9 @@ typedef struct {
 } TimingPoint;
 
 // Parse note section from .qua
-QuaverNote *ParseQuaverNotes(const char *data, size_t *outCount);
+QuaverNote *ParseQuaverNotes(const char *filepath, size_t *outCount);
+
+TimingPoint *ParseTimingPoints(const char *filepath, size_t *timingPointCount);
 
 // Convert absolute timing into beat based measures
 double TimeToBeat(double timeMs, TimingPoint *timingPoints, size_t tpCount);
