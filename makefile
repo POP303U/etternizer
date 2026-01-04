@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=c99 -Wpedantic -Wall -Wextra -O2
-SRC = main.c lib/file.c lib/tools.c lib/inputhandler.c lib/etterna/header.c lib/quaver/parser.c
+SRC = main.c lib/file.c lib/tools.c lib/inputhandler.c lib/etterna/header.c lib/quaver/parser.c lib/quaver/notes.c
 OUTDIR = out
 OUT = $(OUTDIR)/etternizer
 OBJ = $(SRC:.c=.o)
