@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "lib/quaver/notes.h"
+#include "lib/quaver/parser.h"
 #include "lib/inputhandler.h"
 #include "lib/etterna/header.h"
 
@@ -18,6 +19,8 @@ int main(int argc, char **argv) {
 
     // Parse .qua header
     QuaverHeader *quaverHeader = ParseQuaverHeader(inputHandler->chart);
+    char *smHeader = BuildSMHeader(quaverHeader);
+    printf("%s", smHeader);
     if (!quaverHeader) {
         fprintf(stderr, "Failed to parse .qua header.\n");
         return 1;
@@ -43,29 +46,20 @@ int main(int argc, char **argv) {
     }
 
     // DEBUG: print parsed notes
-    printf("Parsed %zu notes:\n", noteCount);
-    for (size_t i = 0; i < noteCount; i++) {
-        printf("Note %2zu: start=%.2f ms, lane=%d\n", i, notes[i].startMs, notes[i].lane);
-    }
+    //printf("Parsed %zu notes:\n", noteCount);
+    //for (size_t i = 0; i < noteCount; i++) {
+    //    printf("Note %2zu: start=%.2f ms, lane=%d\n", i, notes[i].startMs, notes[i].lane);
+    //}
 
     // Build measures
     size_t measureCount = 0;
     Measure *measures = BuildMeasures(notes, noteCount, timingPoints, timingPointCount, &measureCount);
 
     // Build StepMania header and note body
-    char *smHeader = BuildSMHeader(quaverHeader);
     char *smNotes = BuildSMNotes(measures, measureCount);
 
-    printf("%s", smHeader);
     printf("%s", smNotes);
 
-    // Free memory
-    free(smHeader);
-    free(smNotes);
-    free(measures);
-    free(notes);
-    free(timingPoints);
     FreeQuaverHeader(quaverHeader);
-
     return 0;
 }
