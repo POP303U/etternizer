@@ -41,51 +41,54 @@ char *ParseQuaverBPMS(const char *data) {
     }
 
     char *pos = strstr(data, "TimingPoints:");
-
     if (!pos) {
-        return strdup("0=0");
+        return strdup("0.000=0.000");
     }
 
     pos += strlen("TimingPoints:");
 
-    double baseTime = -1.0;
+    double lastMs = 0.0;
+    double lastBpm = 0.0;
+    double currentBeat = 0.0;
+    int first = 1;
 
-    char *bpms = malloc(2048);
+    char *bpms = malloc(4096);
     bpms[0] = '\0';
 
     while (1) {
-        // temporary vars for counting string length
-        char *_startTime = strstr(pos, "StartTime:");
-        char *_bpm = strstr(pos, "Bpm:");
+        char *startPtr = strstr(pos, "StartTime:");
+        char *bpmPtr   = strstr(pos, "Bpm:");
 
-        if (!_startTime || !_bpm) {
+        if (!startPtr || !bpmPtr) {
             break;
         }
 
-        // starttime in ms
-        double startTime = atof(_startTime + strlen("Starttime:")) / 1000.0;
-        double bpm = atof(_bpm + strlen("Bpm:"));
+        double startMs = atof(startPtr + strlen("StartTime:"));
+        double bpm     = atof(bpmPtr + strlen("Bpm:"));
 
-        // boundschecking
-        if (baseTime < 0.0) {
-            baseTime = startTime;
+        if (!first) {
+            double deltaMs = startMs - lastMs;
+            currentBeat += (deltaMs / 1000.0) * (lastBpm / 60.0);
+        } else {
+            currentBeat = 0.0;
+            first = 0;
         }
 
-        // stepmania does timing in a negative offset way
-        double smTime = startTime - baseTime;
-
-        char buffer[64];
-
-        // dont add another comma if the current bpm doesn't exist
-        snprintf(buffer, sizeof(buffer), "%s%.3f=%.3f", bpms[0] ? "," : "", smTime, bpm);
+        char buffer[128];
+        snprintf(
+            buffer,
+            sizeof(buffer),
+            "%s%.3f=%.3f",
+            bpms[0] ? "," : "",
+            currentBeat,
+            bpm
+        );
 
         strcat(bpms, buffer);
 
-        pos = _bpm + strlen("Bpm:");
-
-        if (bpms[0] == '\0') {
-            strcpy(bpms, "0=0");
-        }
+        lastMs = startMs;
+        lastBpm = bpm;
+        pos = bpmPtr + strlen("Bpm:");
     }
 
     return bpms;
