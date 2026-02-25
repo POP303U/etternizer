@@ -1,4 +1,4 @@
-#include "inputhandler.h"
+#include "input.h"
 #include <string.h>
 #include "file.h"
 #include "tools.h"
