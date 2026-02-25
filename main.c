@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include "lib/quaver/notes.h"
 #include "lib/quaver/parser.h"
-#include "lib/inputhandler.h"
+#include "lib/etterna/export.h"
 #include "lib/etterna/header.h"
+#include "lib/input.h"
 
 int main(int argc, char **argv) {
     if (argc < 2) {
@@ -51,14 +52,22 @@ int main(int argc, char **argv) {
     //    printf("Note %2zu: start=%.2f ms, lane=%d\n", i, notes[i].startMs, notes[i].lane);
     //}
 
-    // Build measures
+    // Build measures, this should not actually be exposed but sure
     size_t measureCount = 0;
     Measure *measures = BuildMeasures(notes, noteCount, timingPoints, timingPointCount, &measureCount);
 
     // Build StepMania header and note body
     char *smNotes = BuildSMNotes(measures, measureCount);
 
-    printf("%s", smNotes);
+    // Export chart into the exports folder
+    if (!ExportSMChart(
+            argv[1],
+            quaverHeader,
+            smHeader,
+            smNotes)) {
+        fprintf(stderr, "Export failed.\n");
+        return 1;
+    }
 
     FreeQuaverHeader(quaverHeader);
     return 0;
