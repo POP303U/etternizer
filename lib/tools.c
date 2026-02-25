@@ -37,3 +37,36 @@ char *ExtractValue(const char *source, const char *key) {
 
     return out;
 }
+
+const char *GetFolderName(const char *path) {
+    const char *slash = strrchr(path, '/');
+// Solution is fine but something else would be better
+#ifdef _WIN32
+    const char *backSlash = strrchr(path, '\\');
+    if (!slash || (backSlash && backSlash > slash)) {
+        slash = backSlash;
+    }
+#endif
+    return slash ? slash + 1 : path;
+}
+
+int CopyFile(const char *src, const char *dst) {
+    FILE *in = fopen(src, "rb");
+    if (!in) return 0;
+
+    FILE *out = fopen(dst, "wb");
+    if (!out) {
+        fclose(in);
+        return 0;
+    }
+
+    char buffer[18096];
+    size_t bytes;
+    while ((bytes = fread(buffer, 1, sizeof(buffer), in)) > 0) {
+        fwrite(buffer, 1, bytes, out);
+    }
+
+    fclose(in);
+    fclose(out);
+    return 1;
+}
