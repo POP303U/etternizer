@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c99 -Wpedantic -Wall -Wextra -O2
+CFLAGS = -std=c99 -lm -Wpedantic -Wall -Wextra -O2
 SRC = main.c lib/file.c lib/tools.c lib/input.c lib/etterna/header.c lib/quaver/parser.c lib/quaver/notes.c lib/etterna/export.c
 OUTDIR = out
 OUT = $(OUTDIR)/etternizer
@@ -24,4 +24,4 @@ run:
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ) $(OUTDIR) $(LOG)
+	rm -f $(OBJ) $(OUTDIR)/etternizer $(LOG)

@@ -18,15 +18,15 @@ char *BuildSMHeader(const QuaverHeader *quaverHeader) {
              "#OFFSET:%.7f;\n"
              "#SAMPLESTART:%.3f;\n"
              "#SAMPLELENGTH:23.640;\n"
-             "#BPMS:%s\n"
+             "#BPMS:%s;\n"
              "#STOPS:;\n"
              "//---------------dance-single - ----------------\n"
              "#NOTES:\n"
-             "    dance-single:\n"
-             "    : \n"
-             "    Challenge: \n"
-             "    25: \n"
-             "    0.000,0.000,0.000,0.000,0.000:\n",
+             "     dance-single:\n"
+             "     :\n"
+             "     Challenge:\n"
+             "     25:\n"
+             "     0.000,0.000,0.000,0.000,0.000:",
              quaverHeader->title ? quaverHeader->title : "",
              quaverHeader->artist ? quaverHeader->artist : "",
              quaverHeader->creator ? quaverHeader->creator : "",

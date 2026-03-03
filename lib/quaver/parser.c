@@ -17,6 +17,15 @@ QuaverHeader *ParseQuaverHeader(const char *filepath) {
     header->title      = ExtractValue(data, "Title");
     header->artist     = ExtractValue(data, "Artist");
     header->creator    = ExtractValue(data, "Creator");
+
+    // Strip surrounding single quotes from creator (Quaver stores empty as '')
+    if (header->creator) {
+        size_t len = strlen(header->creator);
+        if (len >= 2 && header->creator[0] == '\'' && header->creator[len - 1] == '\'') {
+            memmove(header->creator, header->creator + 1, len - 2);
+            header->creator[len - 2] = '\0';
+        }
+    }
     header->audio      = ExtractValue(data, "AudioFile");
     header->background = ExtractValue(data, "BackgroundFile");
     header->banner     = ExtractValue(data, "BannerFile");
@@ -75,14 +84,18 @@ char *ParseQuaverBPMS(const char *data) {
         }
 
         char buffer[128];
-        snprintf(
-            buffer,
-            sizeof(buffer),
-            "%s%.3f=%.3f",
-            bpms[0] ? "," : "",
-            currentBeat,
-            bpm
-        );
+        long long ibeat = (long long)currentBeat;
+        long long ibpm  = (long long)bpm;
+        if ((double)ibeat == currentBeat && (double)ibpm == bpm) {
+            snprintf(buffer, sizeof(buffer), "%s%lld=%lld",
+                     bpms[0] ? "," : "", ibeat, ibpm);
+        } else if ((double)ibeat == currentBeat) {
+            snprintf(buffer, sizeof(buffer), "%s%lld=%.3f",
+                     bpms[0] ? "," : "", ibeat, bpm);
+        } else {
+            snprintf(buffer, sizeof(buffer), "%s%.3f=%.3f",
+                     bpms[0] ? "," : "", currentBeat, bpm);
+        }
 
         strcat(bpms, buffer);
 

@@ -3,10 +3,10 @@
 
 #include <stddef.h>
 
-#define ROWS_PER_MEASURE 192 // max bpm
+#define ROWS_PER_MEASURE 192  // SM standard: 4,8,12,16,24,32,48,64,96,192
 
 typedef struct {
-    char rows[ROWS_PER_MEASURE][5]; // 192 is the highest bpm measurement, 5 for null terminator
+    char rows[ROWS_PER_MEASURE][5]; // 4 lanes + null terminator
 } Measure;
 
 typedef struct {

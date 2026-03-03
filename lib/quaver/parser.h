@@ -8,10 +8,11 @@ typedef struct {
     char *audio;
     char *background;
     char *banner;
+    char *cdtitle;       // Empty template
 
-    double previewTime; // seconds
-    double offset;       // etterna uses -offset
-    char *bpms;          // list of bpms in sm format
+    double previewTime;  // Seconds
+    double offset;       // Etterna uses -offset
+    char *bpms;          // List of bpms in sm format
 } QuaverHeader;
 
 // Parses simple key variables into the header struct
