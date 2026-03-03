@@ -1,7 +1,8 @@
 #ifndef EXPORT_H
 #define EXPORT_H
 
-#define PATH_MAX 4096
+// Create my own PATH_MAX manually because the default is too small
+#define MAX_PATH 1024
 #include "../quaver/parser.h"
 
 int ExportSMChart(
